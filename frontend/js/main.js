@@ -79,3 +79,5 @@ function filterByCountry(list, country) {
         return _.contains(article.countries, country);
     });
 }
+
+var currentArticles = sortByDate(articles);

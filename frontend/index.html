@@ -3,39 +3,67 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>RSS Project</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
 
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="css/vendor/normalize.css">
-        <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
-        <link rel="stylesheet" href="css/vendor/bootstrap-responsive.min.css">
-        <link rel="stylesheet" href="css/main.css">
-        <script src="js/vendor/modernizr-2.6.2.min.js"></script>
-    </head>
-    
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/vendor/normalize.css">
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="css/vendor/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    <style type="text/css">
+      #maprow {
+        margin-bottom: 2em;
+      }
+      #map-canvas {
+        min-height: 200px;
+      }
+    </style>
+  </head>
+  
 
-    <body>
-      <div class="header">
-        <h2>Map Project</h2>
+  <body>
+    <div class="navbar navbar-inverse">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="#">RSS Project</a>
+        </div>
       </div>
-      <div id="map-canvas"> </div>
-      <div id="feed" class="sidebar"> </div>
+    </div>
+    <div class="container">
+      <div class="row" id="maprow">
+        <div class="span12">
+          <div id="map-canvas"> </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span4" id="sources">
+          <strong>Sources</strong>
+        </div>
+        <div class="span4" id="tagcloud">
+          <strong>Keywords</strong>
+        </div>
+        <div class="span4" id="articles">
+          <strong>Articles</strong>
+          <div id="feed" class="sidebar"> </div>
+        </div>
+      </div>
 
-        <!-- Javascript files at the end -->
-        <script src="js/vendor/jquery-1.9.1.min.js"></script>
-        <script src="js/vendor/bootstrap.min.js"></script>
-        <script src="js/vendor/underscore-min.js"></script>
-        <script src="js/plugins.js"></script>
-        <script src="data/articles.js"></script>
-        <script src="js/main.js"></script>
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-        <script type="text/javascript">
+      <!-- Javascript files at the end -->
+      <script src="js/vendor/jquery-1.9.1.min.js"></script>
+      <script src="js/vendor/bootstrap.min.js"></script>
+      <script src="js/vendor/underscore-min.js"></script>
+      <script src="js/plugins.js"></script>
+      <script src="data/articles.js"></script>
+      <script src="js/main.js"></script>
+      <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+      <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+      <script type="text/javascript">
         var citiesToArticles = new Array();
         var defaultFeedNumber = 10;
         google.load("feeds", "1");
@@ -71,9 +99,9 @@
           geocoder = new google.maps.Geocoder();
           var latlng = new google.maps.LatLng(-34.397, 150.644);
           var mapOptions = {
-             zoom: 8,
-             center: latlng,
-             mapTypeId: google.maps.MapTypeId.ROADMAP
+              zoom: 8,
+              center: latlng,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
           }
           map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
         }
@@ -105,6 +133,7 @@
 
         google.setOnLoadCallback(initialize);
         google.maps.event.addDomListener(window, 'load', initializeMap);
-        </script>
-    </body>
+      </script>
+    </div>
+  </body>
 </html>

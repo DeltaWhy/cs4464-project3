@@ -135,21 +135,6 @@ html,body {
     color: #000;
 }
 
-#map-canvas {
-    height: 70%;
-	width: 70%;
-	left: 30%;
-	max-width: 70%;
-    margin-right: 70%;
-}
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    Helper classes
