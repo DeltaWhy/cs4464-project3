@@ -3,6 +3,7 @@ import urllib
 import json
 import feedparser
 import sys
+import os
 
 try:
     from urlparse import urlparse
@@ -112,8 +113,7 @@ def getAnnotatedArticles():
             articles.append(article)
     return articles
 
-
-
-#print(extractKeywords('http://edition.cnn.com/2013/06/26/world/meast/israel-settlement-kerry/index.html'))
-#print(json.dumps(feedparser.parse('http://rss.cnn.com/rss/edition.rss')))
-print(json.dumps(getAnnotatedArticles()))
+os.chdir(os.path.dirname(sys.argv[0]))
+f = open("../frontend/data/articles.js", "w")
+f.write("var articles = " + json.dumps(getAnnotatedArticles()))
+f.close()
