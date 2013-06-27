@@ -66,12 +66,35 @@ def extractKeywords(url):
 
     return json.loads(content)['keywords']
 
+def citiesFromEntities(entities):
+    cities = []
+    for e in entities:
+        if e['type'] != 'City':
+            continue
+        if ('disambiguated' in e) and ('name' in e['disambiguated']):
+            cities.append(e['disambiguated']['name'])
+        else:
+            cities.append(e['text'])
+    return cities
+
+def countriesFromEntities(entities):
+    countries = []
+    for e in entities:
+        if e['type'] != 'Country':
+            continue
+        if ('disambiguated' in e) and ('name' in e['disambiguated']):
+            countries.append(e['disambiguated']['name'])
+        else:
+            countries.append(e['text'])
+    return countries
+
 def getAnnotatedArticles():
     feedUrls = ['http://rss.cnn.com/rss/edition.rss']
     articles = []
     for feedUrl in feedUrls:
         notify("parsing " + feedUrl)
         feed = feedparser.parse(feedUrl)
+        feed['entries'] = feed['entries'][0:20]
         for entry in feed['entries']:
             article = {
                 'link': entry['link'],
@@ -82,6 +105,10 @@ def getAnnotatedArticles():
             }
             notify("extracting keywords from " + entry['link'])
             article['keywords'] = extractKeywords(entry['link'])
+            notify("extracting entities from " + entry['link'])
+            article['entities'] = extractEntities(entry['link'])
+            article['cities'] = citiesFromEntities(article['entities'])
+            article['countries'] = countriesFromEntities(article['entities'])
             articles.append(article)
     return articles
 
