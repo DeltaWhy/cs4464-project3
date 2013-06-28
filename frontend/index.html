@@ -101,18 +101,25 @@
       <script type="text/javascript" src="https://www.google.com/jsapi"></script>
       <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
       <script type="text/javascript">
-        var citiesToArticles = new Array();
-
         var geocoder = new google.maps.Geocoder();
         google.maps.visualRefresh = true;
 
         function update() {
-            _.each(currentArticles,function(entry) {
-              extractCities(entry.cities.join(' '));
-            });
+          plotCities(_.keys(cityWeights(currentArticles)), 0);
 
           $('#articles').html(renderHeadlines({entries: currentArticles}));
           $('#sources').html(renderSources({sources: sourcesFromArticles(currentArticles)}));
+        }
+
+        function plotCities(cities, i) {
+          if (cities[i]) {
+            codeAddress(cities[i]);
+          }
+          if (i+1 < cities.length) {
+            setTimeout(function() {
+              plotCities(cities, i+1);
+            }, 200);
+          }
         }
 
         function initializeMap() {
@@ -131,23 +138,15 @@
               map.setCenter(results[0].geometry.location);
               var marker = new google.maps.Marker({
                   map: map,
-                  position: results[0].geometry.location
+                  position: results[0].geometry.location,
+                  title: address
               });
+            } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+            } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
             } else {
               alert('Geocode was not successful for the following reason: ' + status);
             }
           });
-        }
-
-        function extractCities(inputText) {
-          var cities = ["Barcelona", "Israel", "New York", "Jerusalem", "Miami", "Atlanta"];
-          for (var i = 0; i < cities.length; i++) {
-            if (inputText.indexOf(cities[i]) != -1) {
-              var tempArray = [inputText, cities[i]];
-              citiesToArticles.push(tempArray);
-              codeAddress(cities[i]);
-            }
-          }
         }
 
         google.setOnLoadCallback(update);
