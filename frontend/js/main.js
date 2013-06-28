@@ -11,9 +11,9 @@ function keywordWeights(list) {
         _.each(_.filter(article.keywords, function(keyword) { return parseFloat(keyword.relevance) >= minRelevance; }),
                function(keyword) {
                    if (keywords[keyword.text]) {
-                       keywords[keyword.text] += 1;
+                       keywords[keyword.text] += parseFloat(keyword.relevance);
                    } else {
-                       keywords[keyword.text] = 1;
+                       keywords[keyword.text] = parseFloat(keyword.relevance);
                    }
                });
     });
@@ -94,3 +94,6 @@ var renderSources = Mustache.compile('{{#sources}}'+
 var renderKeywords = Mustache.compile('{{#keywords}}'+
 									  '<a href={{link}} target="_blank"><div class"keyword">{{keyword}}</div></a>'+	
 									  '{{/keywords}}');
+var renderTags = Mustache.compile('{{#tags}}'+
+                                  '<a style="font-size:{{size}}px">{{keyword}}</a>'+
+                                  '{{/tags}}');
