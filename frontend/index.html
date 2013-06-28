@@ -119,19 +119,19 @@
         function onMarkerClick(event) {
           map.panTo(this.position);
           console.log(this.title);
-          currentArticles = filterByCity(currentArticles, this.title);
+          currentArticles = filterByCity(articles, this.title);
           update();
         }
 
         function onTagClick(event) {
           var tag = $(event.target).text().trim();
-          currentArticles = filterByKeyword(currentArticles, tag);
+          currentArticles = filterByKeyword(articles, tag);
           update();
         }
 
         function onHeadlineClick(event) {
           var link = $(event.target).data("link");
-          currentArticles = [_.findWhere(currentArticles, {link: link})];
+          currentArticles = [_.findWhere(articles, {link: link})];
           update();
         }
 
