@@ -122,19 +122,25 @@
           update();
         }
 
+        function onTagClick(event) {
+          var tag = $(event.target).text().trim();
+          currentArticles = filterByKeyword(currentArticles, tag);
+          update();
+        }
+
         function updateTagCloud() {
-            var MIN_FONT_SIZE = 10.0;
-            var MAX_FONT_SIZE = 35.0;
+          var MIN_FONT_SIZE = 10.0;
+          var MAX_FONT_SIZE = 35.0;
 
-            var tags = keywordWeights(currentArticles);
-            var minWeight = _.min(_.values(tags));
-            var maxWeight = _.max(_.values(tags));
+          var tags = keywordWeights(currentArticles);
+          var minWeight = _.min(_.values(tags));
+          var maxWeight = _.max(_.values(tags));
 
-            var tagSizes = _.map(tags, function (weight, keyword) {
-                return {keyword: keyword,
-                        size: MIN_FONT_SIZE + Math.round((MAX_FONT_SIZE - MIN_FONT_SIZE) * ((Math.log(weight) - Math.log(minWeight)) / (Math.log(maxWeight) - Math.log(minWeight))))}
-            });
-            $("#keywords").html(renderTags({tags: tagSizes}));
+          var tagSizes = _.map(tags, function (weight, keyword) {
+            return {keyword: keyword,
+              size: MIN_FONT_SIZE + Math.round((MAX_FONT_SIZE - MIN_FONT_SIZE) * ((Math.log(weight) - Math.log(minWeight)) / (Math.log(maxWeight) - Math.log(minWeight))))}
+          });
+          $("#keywords").html(renderTags({tags: tagSizes}));
         }
 
         function plotCities(cities, i) {
@@ -204,6 +210,7 @@
             currentArticles = articles;
             update();
           });
+          $("#tagcloud").on('click', 'a', onTagClick);
 
           //var latlng = new google.maps.LatLng(-34.397, 150.644);
           var latlng = new google.maps.LatLng(41.53894649064396, -23.261333788281284);

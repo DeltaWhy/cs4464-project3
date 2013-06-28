@@ -5,8 +5,9 @@ function sortByDate(list) {
 }
 
 function keywordWeights(list) {
-    var minRelevance = 0.5;
+    var minRelevance = 0.4;
     var maxKeywords = 50;
+    var blacklist = ["CNN.com Video"];
     var keywords = {};
     _.each(list, function(article) {
         _.each(_.filter(article.keywords, function(keyword) { return parseFloat(keyword.relevance) >= minRelevance; }),
@@ -18,7 +19,12 @@ function keywordWeights(list) {
                    }
                });
     });
-    var topKeywords = _.sortBy(_.pairs(keywords), _.last).reverse().slice(0, maxKeywords);
+    var topKeywords = _.filter(_.sortBy(_.pairs(keywords), _.last).reverse().slice(0, maxKeywords),
+                               function (pair) {
+                                   return _.find(blacklist, function (word) {
+                                       return pair.indexOf(word) !== -1;
+                                   }) == null;
+                               });
     return _.object(_.sortBy(topKeywords, _.first));
 }
 
