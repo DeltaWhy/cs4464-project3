@@ -129,6 +129,12 @@
           update();
         }
 
+        function onSourceClick(event) {
+          var source = $(event.target).text().trim();
+          currentArticles = filterBySource(articles, source);
+          update();
+        }
+
         function onHeadlineClick(event) {
           var link = $(event.target).data("link");
           currentArticles = [_.findWhere(articles, {link: link})];
@@ -231,6 +237,7 @@
             update();
           });
           $("#tagcloud").on('click', 'a', onTagClick);
+          $("#sources").on('click', 'a', onSourceClick);
           $("#headlines").on('click', 'dt', onHeadlineClick);
 
           //var latlng = new google.maps.LatLng(-34.397, 150.644);
