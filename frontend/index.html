@@ -59,13 +59,14 @@
       </div>
 
       <div class="row">
-        <div class="span2" id="sources">
+        <div class="span2">
           <h3>Sources</h3>
+          <div id="sources"></div>
         </div>
 
-        <div class="span6" id="articles">
+        <div class="span6">
           <h3>Headlines</h3>
-          <div id="feed" class="sidebar"> </div>
+          <div id="articles" class="sidebar"> </div>
         </div>
 
         <div class="span4" id="tagcloud">
@@ -110,7 +111,8 @@
               extractCities(entry.cities.join(' '));
             });
 
-          $('#feed').html(renderHeadlines({entries: currentArticles}));
+          $('#articles').html(renderHeadlines({entries: currentArticles}));
+          $('#sources').html(renderSources({sources: sourcesFromArticles(currentArticles)}));
         }
 
         function initializeMap() {

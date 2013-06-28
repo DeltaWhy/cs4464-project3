@@ -29,9 +29,9 @@ function filterByKeyword(list, keyword) {
 }
 
 function sourcesFromArticles(list) {
-    return _.object(_.uniq(_.map(list, function(article) {
-        return [article.source, article.sourceUrl];
-    })));
+    return _.uniq(_.map(list, function(article) {
+        return {name: article.source, link: article.sourceUrl};
+    }), false, function(source) { return source.link; });
 }
 
 function filterBySource(list, source) {
@@ -87,3 +87,7 @@ var currentArticles = sortByDate(articles);
 var renderHeadlines = Mustache.compile('{{#entries}}'+
                                  '<a href={{link}} target="_blank"><div class="article">{{title}}</div></a>'+
                                  '{{/entries}}');
+
+var renderSources = Mustache.compile('{{#sources}}'+
+                                     '<a href={{link}} target="_blank"><div class="source">{{name}}</div></a>'+
+                                     '{{/sources}}');
