@@ -81,3 +81,9 @@ function filterByCountry(list, country) {
 }
 
 var currentArticles = sortByDate(articles);
+
+
+/* MUSTACHE TEMPLATES */
+var renderHeadlines = Mustache.compile('{{#entries}}'+
+                                 '<a href={{link}} target="_blank"><div class="article">{{title}}</div></a>'+
+                                 '{{/entries}}');
