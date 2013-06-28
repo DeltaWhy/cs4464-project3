@@ -33,11 +33,8 @@
     </script>
 
     <style type="text/css">
-      #maprow {
-        margin-bottom: 2em;
-      }
       #map-canvas {
-        min-height: 200px;
+        min-height: 300px;
       }
       .article-count {
         line-height: 50px;
@@ -47,13 +44,27 @@
       .article-count a {
         color: #fff;
       }
+      #headlines {
+        overflow: auto;
+      }
+      .fullheight {
+        height: 100%;
+      }
+      #wrapper {
+        position: absolute;
+        top: 52px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: auto;
+      }
     </style>
   </head>
 
   <body>
-    <div class="navbar navbar-inverse">
+    <div class="navbar navbar-inverse navbar-static-top">
       <div class="navbar-inner">
-        <div class="container">
+        <div class="container-fluid">
           <a class="brand" href="#">RSS Project</a>
           <div class="pull-right article-count">
             <span id="current-article-count"></span>/<span id="total-article-count"></span> articles.
@@ -63,48 +74,44 @@
       </div>
     </div>
 
-    <div class="container">
-      <div class="row" id="maprow">
-        <div class="span12">
-          <div id="map-canvas"> </div>
-          <div class="progress progress-striped active" style="display:none">
-            <div class="bar"></div>
+    <div id="wrapper">
+    <div class="container-fluid fullheight">
+      <div class="row-fluid fullheight">
+        <div class="span7 fullheight">
+          <div id="map">
+            <div id="map-canvas"> </div>
+            <div class="progress progress-striped active" style="display:none">
+              <div class="bar"></div>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div class="span5">
+              <h3>Sources</h3>
+              <div id="sources"></div>
+            </div>
+            <div class="span7" id="tagcloud">
+              <h3>Keywords</h3>
+              <div id="myCanvasCont">
+                <canvas width="300" height="300" id="myCanvas">
+                </canvas>
+              </div>
+
+              <div id="tags">
+                <ul>
+                  <li><a href="http://www.google.com" target="_blank">Google</a></li>
+                  <li><a href="http://www.cnn.com" target="_blank">CNN</a></li>
+                  <li><a href="http://www.bbc.co.uk" target="_blank">BBC</a></li>
+                  <li><a href="http://www.reuters.com"target="_blank">Reuters</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="row">
-        <div class="span2">
-          <h3>Sources</h3>
-          <div id="sources"></div>
-        </div>
-
-        <div class="span6">
+        <div id="headlines" class="span5 fullheight">
           <h3>Headlines</h3>
           <div id="articles" class="sidebar"> </div>
         </div>
-
-        <div class="span4" id="tagcloud">
-          <h3>Keywords</h3>
-		  <div id="myCanvasCont">
-			<canvas width="300" height="300" id="myCanvas">
-			</canvas>
-		  </div>
-
-		  <div id="tags">
-			  <ul>
-				<li><a href="http://www.google.com" target="_blank">Google</a></li>
-				<li><a href="http://www.cnn.com" target="_blank">CNN</a></li>
-				<li><a href="http://www.bbc.co.uk" target="_blank">BBC</a></li>
-				<li><a href="http://www.reuters.com"target="_blank">Reuters</a></li>
-			  </ul>
-		  </div>
-		</div>
-
-
       </div>
-
-
 
       <!-- Javascript files at the end -->
       <script src="js/vendor/bootstrap.min.js"></script>
@@ -137,15 +144,14 @@
 
         function plotCities(cities, i) {
           if (i == 0) {
-            $("#maprow .progress").fadeIn();
+            $("#map .progress").fadeIn();
           }
-          $("#maprow .progress .bar").css({
+          $("#map .progress .bar").css({
               width: (i/cities.length)*100 + '%'
           });
           if (cities[i]) {
             if (cityLocations[cities[i]]) {
               var latlng = new google.maps.LatLng(cityLocations[cities[i]].lat, cityLocations[cities[i]].lng);
-              map.setCenter(latlng);
               var marker = new google.maps.Marker({
                 map: map,
                 position: latlng,
@@ -158,14 +164,13 @@
                   plotCities(cities, i+1);
                 }, 200);
               } else {
-                $("#maprow .progress .bar").css({width: '100%'});
-                $("#maprow .progress").fadeOut();
+                $("#map .progress .bar").css({width: '100%'});
+                $("#map .progress").fadeOut();
               }
             } else {
               geocoder.geocode( { 'address': cities[i]}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                   var latlng = results[0].geometry.location;
-                  map.setCenter(latlng);
                   var marker = new google.maps.Marker({
                     map: map,
                     position: latlng,
@@ -188,14 +193,14 @@
                     plotCities(cities, i+1);
                   }, 200);
                 } else {
-                  $("#maprow .progress .bar").css({width: '100%'});
-                  $("#maprow .progress").fadeOut();
+                  $("#map .progress .bar").css({width: '100%'});
+                  $("#map .progress").fadeOut();
                 }
               });
             }
           } else {
-            $("#maprow .progress .bar").css({width: '100%'});
-            $("#maprow .progress").fadeOut();
+            $("#map .progress .bar").css({width: '100%'});
+            $("#map .progress").fadeOut();
           }
         }
 
@@ -205,9 +210,10 @@
             update();
           });
 
-          var latlng = new google.maps.LatLng(-34.397, 150.644);
+          //var latlng = new google.maps.LatLng(-34.397, 150.644);
+          var latlng = new google.maps.LatLng(41.53894649064396, -23.261333788281284);
           var mapOptions = {
-              zoom: 8,
+              zoom: 2,
               center: latlng,
               mapTypeId: google.maps.MapTypeId.ROADMAP
           }
@@ -217,6 +223,7 @@
 
         google.maps.event.addDomListener(window, 'load', initialize);
       </script>
+    </div>
     </div>
   </body>
 </html>
