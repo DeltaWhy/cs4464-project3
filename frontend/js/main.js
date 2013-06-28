@@ -6,6 +6,7 @@ function sortByDate(list) {
 
 function keywordWeights(list) {
     var minRelevance = 0.5;
+    var maxKeywords = 50;
     var keywords = {};
     _.each(list, function(article) {
         _.each(_.filter(article.keywords, function(keyword) { return parseFloat(keyword.relevance) >= minRelevance; }),
@@ -17,7 +18,8 @@ function keywordWeights(list) {
                    }
                });
     });
-    return keywords;
+    var topKeywords = _.sortBy(_.pairs(keywords), _.last).reverse().slice(0, maxKeywords);
+    return _.object(_.sortBy(topKeywords, _.first));
 }
 
 function filterByKeyword(list, keyword) {
