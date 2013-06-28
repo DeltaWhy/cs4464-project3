@@ -91,3 +91,6 @@ var renderHeadlines = Mustache.compile('{{#entries}}'+
 var renderSources = Mustache.compile('{{#sources}}'+
                                      '<a href={{link}} target="_blank"><div class="source">{{name}}</div></a>'+
                                      '{{/sources}}');
+var renderKeywords = Mustache.compile('{{#keywords}}'+
+									  '<a href={{link}} target="_blank"><div class"keyword">{{keyword}}</div></a>'+	
+									  '{{/keywords}}');

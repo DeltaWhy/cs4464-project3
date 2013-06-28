@@ -26,7 +26,7 @@
             reverse: true,
             depth: 0.8,
             maxSpeed: 0.05
-          },'tags')) {
+          },'keywords')) {
             $('#myCanvasContainer').hide();
           }
           });
@@ -91,13 +91,11 @@
 			</canvas>
 		  </div>
 
-		  <div id="tags">
-			  <ul>
-				<li><a href="http://www.google.com" target="_blank">Google</a></li>
-				<li><a href="http://www.cnn.com" target="_blank">CNN</a></li>
-				<li><a href="http://www.bbc.co.uk" target="_blank">BBC</a></li>
-				<li><a href="http://www.reuters.com"target="_blank">Reuters</a></li>
-			  </ul>
+
+		  <div id="keywords">
+				
+				<a >Google</a>
+				
 		  </div>
 		</div>
 
@@ -119,13 +117,14 @@
       <script type="text/javascript">
         var geocoder = new google.maps.Geocoder();
         google.maps.visualRefresh = true;
-
+		var key = "Boston";
         function update() {
           $("#current-article-count").text(currentArticles.length);
           $("#total-article-count").text(articles.length);
           $('#articles').html(renderHeadlines({entries: currentArticles}));
           $('#sources').html(renderSources({sources: sourcesFromArticles(currentArticles)}));
           plotCities(_.keys(cityWeights(currentArticles)), 0);
+		  $('#keywords').html(renderKeywords({keywords: keywordWeights(currentArticles)}));
         }
 
         function onMarkerClick(event) {
