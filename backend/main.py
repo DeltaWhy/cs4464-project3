@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import httplib2 as http
 import urllib
 import json
@@ -90,7 +92,10 @@ def countriesFromEntities(entities):
     return countries
 
 def getAnnotatedArticles():
-    feedUrls = ['http://rss.cnn.com/rss/edition.rss']
+    feedUrls = ['http://rss.cnn.com/rss/edition.rss',
+                'http://rss.nytimes.com/services/xml/rss/nyt/World.xml',
+                'http://feeds.bbci.co.uk/news/rss.xml',
+                'http://www.aljazeera.com/Services/Rss/?PostingId=2007731105943979989']
     articles = []
     for feedUrl in feedUrls:
         notify("parsing " + feedUrl)
