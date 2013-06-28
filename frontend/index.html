@@ -55,6 +55,9 @@
       <div class="row" id="maprow">
         <div class="span12">
           <div id="map-canvas"> </div>
+          <div class="progress progress-striped active" style="display:none">
+            <div class="bar"></div>
+          </div>
         </div>
       </div>
 
@@ -97,6 +100,7 @@
       <script src="js/vendor/mustache.js"></script>
       <script src="js/plugins.js"></script>
       <script src="data/articles.js"></script>
+      <script src="data/cityLocations.js"></script>
       <script src="js/main.js"></script>
       <script type="text/javascript" src="https://www.google.com/jsapi"></script>
       <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
@@ -105,20 +109,67 @@
         google.maps.visualRefresh = true;
 
         function update() {
-          plotCities(_.keys(cityWeights(currentArticles)), 0);
-
           $('#articles').html(renderHeadlines({entries: currentArticles}));
           $('#sources').html(renderSources({sources: sourcesFromArticles(currentArticles)}));
+          plotCities(_.keys(cityWeights(currentArticles)), 0);
         }
 
         function plotCities(cities, i) {
-          if (cities[i]) {
-            codeAddress(cities[i]);
+          if (i == 0) {
+            $("#maprow .progress").fadeIn();
           }
-          if (i+1 < cities.length) {
-            setTimeout(function() {
-              plotCities(cities, i+1);
-            }, 200);
+          $("#maprow .progress .bar").css({
+              width: (i/cities.length)*100 + '%'
+          });
+          if (cities[i]) {
+            if (cityLocations[cities[i]]) {
+              var latlng = new google.maps.LatLng(cityLocations[cities[i]].lat, cityLocations[cities[i]].lng);
+              map.setCenter(latlng);
+              var marker = new google.maps.Marker({
+                map: map,
+                position: latlng,
+                title: cities[i]
+              });
+
+              if (i+1 < cities.length) {
+                setTimeout(function() {
+                  plotCities(cities, i+1);
+                }, 200);
+              } else {
+                $("#maprow .progress .bar").css({width: '100%'});
+                $("#maprow .progress").fadeOut();
+              }
+            } else {
+              geocoder.geocode( { 'address': cities[i]}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                  var latlng = results[0].geometry.location;
+                  map.setCenter(latlng);
+                  var marker = new google.maps.Marker({
+                    map: map,
+                    position: latlng,
+                    title: cities[i]
+                  });
+                  cityLocations[cities[i]] = {lat: latlng.lat(), lng: latlng.lng()};
+                } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+                  setTimeout(function() {
+                    plotCities(cities, i);
+                  }, 2000);
+                  return;
+                } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
+                } else {
+                  alert('Geocode was not successful for the following reason: ' + status);
+                }
+
+                if (i+1 < cities.length) {
+                  setTimeout(function() {
+                    plotCities(cities, i+1);
+                  }, 200);
+                } else {
+                  $("#maprow .progress .bar").css({width: '100%'});
+                  $("#maprow .progress").fadeOut();
+                }
+              });
+            }
           }
         }
 
@@ -130,26 +181,9 @@
               mapTypeId: google.maps.MapTypeId.ROADMAP
           }
           map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+          update();
         }
 
-        function codeAddress(address) {
-          geocoder.geocode( { 'address': address}, function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-              map.setCenter(results[0].geometry.location);
-              var marker = new google.maps.Marker({
-                  map: map,
-                  position: results[0].geometry.location,
-                  title: address
-              });
-            } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
-            } else if (status == google.maps.GeocoderStatus.ZERO_RESULTS) {
-            } else {
-              alert('Geocode was not successful for the following reason: ' + status);
-            }
-          });
-        }
-
-        google.setOnLoadCallback(update);
         google.maps.event.addDomListener(window, 'load', initializeMap);
       </script>
     </div>
