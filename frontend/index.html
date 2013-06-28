@@ -88,7 +88,7 @@
         </div>
         <div id="headlines" class="span5 fullheight">
           <h3>Headlines</h3>
-          <div id="articles" class="sidebar"></div>
+          <dl id="articles"></dl>
         </div>
       </div>
 
@@ -105,13 +105,14 @@
       <script type="text/javascript">
         var geocoder = new google.maps.Geocoder();
         google.maps.visualRefresh = true;
-		var key = "Boston";
+        var markers = [];
+
         function update() {
           $("#current-article-count").text(currentArticles.length);
           $("#total-article-count").text(articles.length);
           $('#articles').html(renderHeadlines({entries: currentArticles}));
           $('#sources').html(renderSources({sources: sourcesFromArticles(currentArticles)}));
-          plotCities(_.keys(cityWeights(currentArticles)), 0);
+          updateMarkers();
           updateTagCloud();
         }
 
@@ -126,6 +127,23 @@
           var tag = $(event.target).text().trim();
           currentArticles = filterByKeyword(currentArticles, tag);
           update();
+        }
+
+        function onHeadlineClick(event) {
+          var link = $(event.target).data("link");
+          currentArticles = [_.findWhere(currentArticles, {link: link})];
+          update();
+        }
+
+        function updateMarkers() {
+          var cities = _.keys(cityWeights(currentArticles));
+          _.each(markers, function (marker) {
+            if (_.contains(cities, marker.getTitle())) {
+              marker.setVisible(true);
+            } else {
+              marker.setVisible(false);
+            }
+          });
         }
 
         function updateTagCloud() {
@@ -158,6 +176,7 @@
                 position: latlng,
                 title: cities[i]
               });
+              markers.push(marker);
               google.maps.event.addListener(marker, 'click', onMarkerClick);
 
               if (i+1 < cities.length) {
@@ -177,6 +196,7 @@
                     position: latlng,
                     title: cities[i]
                   });
+                  markers.push(marker);
                   google.maps.event.addListener(marker, 'click', onMarkerClick);
                   cityLocations[cities[i]] = {lat: latlng.lat(), lng: latlng.lng()};
                 } else if (status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
@@ -207,10 +227,11 @@
 
         function initialize() {
           $("#all-articles").bind('click', function (event) {
-            currentArticles = articles;
+            currentArticles = sortByDate(articles);
             update();
           });
           $("#tagcloud").on('click', 'a', onTagClick);
+          $("#headlines").on('click', 'dt', onHeadlineClick);
 
           //var latlng = new google.maps.LatLng(-34.397, 150.644);
           var latlng = new google.maps.LatLng(41.53894649064396, -23.261333788281284);
@@ -220,6 +241,7 @@
               mapTypeId: google.maps.MapTypeId.ROADMAP
           }
           map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+          plotCities(_.keys(cityWeights(currentArticles)), 0);
           update();
         }
 

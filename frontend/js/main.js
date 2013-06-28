@@ -1,7 +1,7 @@
 function sortByDate(list) {
     return _.sortBy(list, function(article) {
         return new Date(article.published);
-    });
+    }).reverse();
 }
 
 function keywordWeights(list) {
@@ -93,15 +93,12 @@ var currentArticles = sortByDate(articles);
 
 /* MUSTACHE TEMPLATES */
 var renderHeadlines = Mustache.compile('{{#entries}}'+
-                                 '<a href={{link}} target="_blank"><div class="article">{{title}}</div></a>'+
-                                 '{{/entries}}');
-
+                                       '<dt data-link="{{link}}">{{published}}</dt>'+
+                                       '<dd><a href={{link}} target="_blank">{{title}}</a></dd>'+
+                                       '{{/entries}}');
 var renderSources = Mustache.compile('{{#sources}}'+
                                      '<a href={{link}} target="_blank"><div class="source">{{name}}</div></a>'+
                                      '{{/sources}}');
-var renderKeywords = Mustache.compile('{{#keywords}}'+
-									  '<a href={{link}} target="_blank"><div class"keyword">{{keyword}}</div></a>'+	
-									  '{{/keywords}}');
 var renderTags = Mustache.compile('{{#tags}}'+
                                   '<a style="font-size:{{size}}px">{{keyword}}</a>'+
                                   '{{/tags}}');
